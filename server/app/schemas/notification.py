@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from .base import AppSchema
-from server.app.models.notification import NotificationType
+from app.models.notification import NotificationType
 
 
 class NotificationRead(AppSchema):

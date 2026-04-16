@@ -6,7 +6,7 @@ from pydantic import Field
 from .base import AppSchema
 from .user import UserPreview
 from .dispute_evidence import DisputeEvidenceRead
-from server.app.models.dispute import DisputeStatus, DisputeResolution
+from app.models.dispute import DisputeStatus, DisputeResolution
 
 
 class DisputeCreate(AppSchema):

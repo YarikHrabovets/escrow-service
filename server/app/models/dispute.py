@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
 
-from server.app.core.database import Base
+from app.core.database import Base
 
 
 class DisputeStatus(str, Enum):

@@ -6,7 +6,7 @@ from datetime import datetime
 from pydantic import EmailStr, Field, field_validator, model_validator
 
 from .base import AppSchema
-from server.app.models.user import UserRole
+from app.models.user import UserRole
 
 
 class UserPreview(AppSchema):

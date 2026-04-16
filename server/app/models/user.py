@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import uuid
 
-from server.app.core.database import Base
+from app.core.database import Base
 
 class UserRole(str, Enum):
     CLIENT = "client"
@@ -13,6 +13,8 @@ class UserRole(str, Enum):
     ADMIN = "admin"
 
 class User(Base):
+    __tablename__ = "users"
+
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)

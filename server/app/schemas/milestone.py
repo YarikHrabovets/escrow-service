@@ -7,7 +7,7 @@ from decimal import Decimal
 from pydantic import Field
 
 from .base import AppSchema
-from server.app.models.milestone import MilestoneStatus
+from app.models.milestone import MilestoneStatus
 
 
 class MilestoneCreate(AppSchema):

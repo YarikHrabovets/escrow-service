@@ -5,7 +5,7 @@ from decimal import Decimal
 from pydantic import Field
 
 from .base import AppSchema
-from server.app.models.transaction import TransactionType, TransactionStatus
+from app.models.transaction import TransactionType, TransactionStatus
 
 
 class TransactionCreate(AppSchema):

@@ -9,7 +9,7 @@ from pydantic import Field, model_validator
 from .base import AppSchema
 from .user import UserPreview
 from .milestone import MilestoneRead
-from server.app.models.deal import DealStatus
+from app.models.deal import DealStatus
 
 
 class DealCreate(AppSchema):

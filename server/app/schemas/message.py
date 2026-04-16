@@ -7,7 +7,7 @@ from pydantic import Field, model_validator
 
 from .base import AppSchema
 from .user import UserPreview
-from server.app.models.message import MessageType
+from app.models.message import MessageType
 
 
 class MessageCreate(AppSchema):
