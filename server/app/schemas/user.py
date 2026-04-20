@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import uuid
+from enum import Enum
 from datetime import datetime
 
 from pydantic import EmailStr, Field, field_validator, model_validator
 
 from .base import AppSchema
 from app.models.user import UserRole
+
+
+class RegisterRole(str, Enum):
+    CLIENT = UserRole.CLIENT.value
+    FREELANCER = UserRole.FREELANCER.value
 
 
 class UserPreview(AppSchema):
@@ -23,7 +29,7 @@ class UserPreview(AppSchema):
 class UserCreate(AppSchema):
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)
-    role: UserRole = UserRole.CLIENT
+    role: RegisterRole = RegisterRole.CLIENT
     username: str | None = Field(default=None, min_length=3, max_length=100)
     full_name: str | None = Field(default=None, max_length=255)
 

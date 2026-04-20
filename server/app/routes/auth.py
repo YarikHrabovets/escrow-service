@@ -8,7 +8,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=TokenResponse)
-async def register( data: UserCreate, request: Request, db: DB) -> TokenResponse:
+async def register(data: UserCreate, request: Request, db: DB) -> TokenResponse:
     return await auth_service.register_user(
         data=data,
         db=db,

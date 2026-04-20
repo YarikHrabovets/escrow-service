@@ -2,10 +2,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.models.audit_log import AuditLog
 from app.schemas.auth import LoginRequest, TokenResponse, RefreshRequest, TokenRefreshResponse
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserRead, RegisterRole
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
 import jwt
 from datetime import datetime, timezone
@@ -22,10 +22,17 @@ async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | No
         if taken.scalar_one_or_none():
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already taken")
 
+    if data.role == RegisterRole.CLIENT:
+        role = UserRole.CLIENT
+    elif data.role == RegisterRole.FREELANCER:
+        role = UserRole.FREELANCER
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role")
+
     user = User(
         email=data.email,
         password_hash=hash_password(data.password),
-        role=data.role,
+        role=role,
         username=data.username,
         full_name=data.full_name,
         last_ip=request_ip,
@@ -53,7 +60,7 @@ async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | No
     )
 
 
-async def login_user(data: UserCreate, db: AsyncSession, request_ip: str | None = None) -> TokenResponse:
+async def login_user(data: LoginRequest, db: AsyncSession, request_ip: str | None = None) -> TokenResponse:
     query = await db.execute(select(User).where(User.email == data.email))
     user = query.scalar_one_or_none()
 
@@ -84,7 +91,7 @@ async def login_user(data: UserCreate, db: AsyncSession, request_ip: str | None 
     )
 
 
-async def refresh_tokens(data: UserCreate, db: AsyncSession, request_ip: str | None = None) -> TokenResponse:
+async def refresh_tokens(data: RefreshRequest, db: AsyncSession, request_ip: str | None = None) -> TokenRefreshResponse:
     try:
         payload = decode_token(data.refresh_token)
     except jwt.ExpiredSignatureError:
