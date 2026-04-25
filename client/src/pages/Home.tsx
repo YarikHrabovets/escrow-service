@@ -23,7 +23,7 @@ function Home() {
 
     return (
         <div className="bg-base-100 text-base-content">
-            <section className="hero min-h-[80vh] text-center bg-gradient-to-b from-base-200 to-base-300">
+            <section className="hero min-h-[80vh] text-center bg-linear-to-b from-base-200 to-base-300">
                 <div className="hero-content flex-col">
                     <h1 className="text-5xl font-bold max-w-2xl">
                         Trade Safely. Get Paid Securely.
