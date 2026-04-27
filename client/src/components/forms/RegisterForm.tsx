@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { formVariants, transition } from '../../animations/formVariants'
+import SubmitButton from '../ui/SubmitButton'
+import Input from '../ui/Input'
+import Select from '../ui/Select'
 
 type Props = {
     formChangeHandler?: () => void
@@ -28,25 +31,63 @@ function RegisterForm({formChangeHandler}: Props) {
             <p className="text-3xl font-bold text-center">Sign Up</p>
             <div className="relative h-1 w-full mt-3 mb-5 rounded bg-gray-700"></div>
             <form className="w-150" onSubmit={submitHandler}>
-                <label htmlFor="email">Email:</label>
-                <input className="input w-full mb-5" id="email" name="email" type="email" value={emial} onChange={e => setEmail(e.target.value)} required />
-                <label htmlFor="username">Username:</label>
-                <input className="input w-full mb-5" id="username" name="username" type="text" value={username} onChange={e => setUsername(e.target.value)} required />
-                <label htmlFor="fullname">Full Name:</label>
-                <input className="input w-full mb-5" id="fullname" name="fullname" type="text" value={fullname} onChange={e => setFullName(e.target.value)} required />
-                <label htmlFor="role">Select who are you:</label>
-                <select className="select w-full mb-5" id="role" name="role" value={role} onChange={e => setRole(e.target.value)}>
-                    <option value="client">Client</option>
-                    <option value="freelancer">Freelancer</option>
-                </select>
-                <label htmlFor="password">Password:</label>
-                <input className="input w-full mb-5" id="password" name="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-                <button className="btn btn-success w-full" type="submit">Sign Up</button>
+                <Input
+                    label="Email:"
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={emial}
+                    placeholder="Enter your email..."
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                />
+                <Input
+                    label="Username:"
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={username}
+                    placeholder="Enter your username..."
+                    onChange={e => setUsername(e.target.value)}
+                    required
+                />
+                <Input
+                    label="Full Name:"
+                    id="fullname"
+                    name="fullname"
+                    type="text"
+                    value={fullname}
+                    placeholder="Enter your full name..."
+                    onChange={e => setFullName(e.target.value)}
+                    required
+                />
+                <Select
+                    id="role"
+                    name="role"
+                    label="Select who are you:"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    options={[
+                        { value: "client", label: "Client" },
+                        { value: "freelancer", label: "Freelancer" },
+                    ]}
+                />
+                <Input
+                    label="Password:"
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    placeholder="Enter your password..."
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                />
+                <SubmitButton>Sign Up</SubmitButton>
             </form>
             <p className="text-center mt-3">
-                Already have an account? 
+                Already have an account?&nbsp;
                 <a
-                    className="link link-secondary"
+                    className="link link-info"
                     onClick={formChangeHandler}
                 >
                     Sign In!

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { formVariants, transition } from '../../animations/formVariants'
+import SubmitButton from '../ui/SubmitButton'
+import Input from '../ui/Input'
 
 type Props = {
     formChangeHandler?: () => void
@@ -25,16 +27,32 @@ function LoginForm({formChangeHandler}: Props) {
             <p className="text-3xl font-bold text-center">Sign In</p>
             <div className="relative h-1 w-full mt-3 mb-5 rounded bg-gray-700"></div>
             <form className="w-150" onSubmit={submitHandler}>
-                <label htmlFor="email">Email:</label>
-                <input className='input w-full mb-5' id="email" name="email" type="email" value={emial} onChange={e => setEmail(e.target.value)} required />
-                <label htmlFor="password">Password:</label>
-                <input className='input w-full mb-5' id="password" name="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-                <button className="btn btn-success w-full" type="submit">Sign In</button>
+                <Input
+                    label="Email:"
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={emial}
+                    placeholder="Enter your email..."
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                />
+                <Input
+                    label="Password:"
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    placeholder="Enter your password..."
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                />
+                <SubmitButton>Sign In</SubmitButton>
             </form>
             <p className="text-center mt-3">
-                Don't have an account? 
+                Don't have an account?&nbsp;
                 <a
-                    className="link link-secondary"
+                    className="link link-info"
                     onClick={formChangeHandler}
                 >
                     Sign Up!

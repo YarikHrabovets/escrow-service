@@ -11,6 +11,9 @@ function Auth() {
 
     return (
         <div className="flex flex-row h-screen">
+            <div className="basis-1/2 p-3">
+                <img className="h-full w-full object-cover rounded-md" src={AuthImage} alt="Auth image" />
+            </div>
             <div className="basis-1/2">
                 <div className="flex justify-center items-center h-full w-full">
                     <div>
@@ -23,9 +26,6 @@ function Auth() {
                         </AnimatePresence>
                     </div>
                 </div>
-            </div>
-            <div className="basis-1/2">
-                <img className="h-full w-full object-cover" src={AuthImage} alt="Auth image" />
             </div>
         </div>
     )
