@@ -11,13 +11,8 @@ class LoginRequest(AppSchema):
 
 class TokenResponse(AppSchema):
     access_token: str
-    refresh_token: str
     token_type: str = "bearer"
     user: UserRead
-
-
-class RefreshRequest(AppSchema):
-    refresh_token: str
 
 
 class TokenRefreshResponse(AppSchema):

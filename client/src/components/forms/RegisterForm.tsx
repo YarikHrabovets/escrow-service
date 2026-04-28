@@ -1,23 +1,46 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { toast } from 'react-toastify'
 import { formVariants, transition } from '../../animations/formVariants'
 import SubmitButton from '../ui/SubmitButton'
 import Input from '../ui/Input'
 import Select from '../ui/Select'
+import { useAppContext } from '../../main'
+import { register } from '../../api/authAPI'
+import { DASHBOARD_ROUTE } from '../../utils/constants'
+import Spinner from '../ui/Spinner'
+import { getErrorMessage } from '../../utils/error'
 
 type Props = {
     formChangeHandler?: () => void
 }
 
 function RegisterForm({formChangeHandler}: Props) {
+    const { user } = useAppContext()
+    const navigate = useNavigate()
+
     const [emial, setEmail] = useState('')
     const [username, setUsername] = useState('')
-    const [fullname, setFullName] = useState('')
+    const [fullName, setFullName] = useState('')
     const [role, setRole] = useState('client')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
 
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setLoading(true)
+
+        try {
+            const data = await register(emial, password, username, fullName, role)
+            user.setIsAuth(true)
+            user.setUser(data)
+            navigate(DASHBOARD_ROUTE)
+        } catch (e: any) {
+            toast.error(getErrorMessage(e))
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -56,7 +79,7 @@ function RegisterForm({formChangeHandler}: Props) {
                     id="fullname"
                     name="fullname"
                     type="text"
-                    value={fullname}
+                    value={fullName}
                     placeholder="Enter your full name..."
                     onChange={e => setFullName(e.target.value)}
                     required
@@ -82,7 +105,12 @@ function RegisterForm({formChangeHandler}: Props) {
                     onChange={e => setPassword(e.target.value)}
                     required
                 />
-                <SubmitButton>Sign Up</SubmitButton>
+                <SubmitButton disabled={loading}>
+                    <span className='flex items-center gap-2'>
+                        Sign Up
+                        {loading && <Spinner size="sm" />}
+                    </span>
+                </SubmitButton>
             </form>
             <p className="text-center mt-3">
                 Already have an account?&nbsp;

@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 
 from app.models.user import User, UserRole
 from app.models.audit_log import AuditLog
-from app.schemas.auth import LoginRequest, TokenResponse, RefreshRequest, TokenRefreshResponse
+from app.schemas.auth import LoginRequest, TokenRefreshResponse
 from app.schemas.user import UserCreate, UserRead, RegisterRole
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
 import jwt
@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 
-async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | None = None) -> TokenResponse:
+async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | None = None) -> dict:
     existing = await db.execute(select(User).where(User.email == data.email))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
@@ -53,14 +53,14 @@ async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | No
     await db.commit()
     await db.refresh(user)
 
-    return TokenResponse(
-        access_token=create_access_token(user.id, user.role),
-        refresh_token=create_refresh_token(user.id),
-        user=UserRead.model_validate(user),
-    )
+    return {
+        "access_token": create_access_token(user.id, user.role),
+        "refresh_token": create_refresh_token(user.id),
+        "user": UserRead.model_validate(user)
+    }
 
 
-async def login_user(data: LoginRequest, db: AsyncSession, request_ip: str | None = None) -> TokenResponse:
+async def login_user(data: LoginRequest, db: AsyncSession, request_ip: str | None = None) -> dict:
     query = await db.execute(select(User).where(User.email == data.email))
     user = query.scalar_one_or_none()
 
@@ -84,16 +84,16 @@ async def login_user(data: LoginRequest, db: AsyncSession, request_ip: str | Non
     await db.commit()
     await db.refresh(user)
 
-    return TokenResponse(
-        access_token=create_access_token(user.id, user.role),
-        refresh_token=create_refresh_token(user.id),
-        user=UserRead.model_validate(user),
-    )
+    return {
+        "access_token": create_access_token(user.id, user.role),
+        "refresh_token": create_refresh_token(user.id),
+        "user": UserRead.model_validate(user)
+    }
 
 
-async def refresh_tokens(data: RefreshRequest, db: AsyncSession, request_ip: str | None = None) -> TokenRefreshResponse:
+async def refresh_tokens(refresh_token: str, db: AsyncSession, request_ip: str | None = None) -> TokenRefreshResponse:
     try:
-        payload = decode_token(data.refresh_token)
+        payload = decode_token(refresh_token)
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token expired")
     except jwt.InvalidTokenError:

@@ -1,19 +1,43 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { toast } from 'react-toastify'
 import { formVariants, transition } from '../../animations/formVariants'
 import SubmitButton from '../ui/SubmitButton'
 import Input from '../ui/Input'
+import { useAppContext } from '../../main'
+import { login } from '../../api/authAPI'
+import { DASHBOARD_ROUTE } from '../../utils/constants'
+import Spinner from '../ui/Spinner'
+import { getErrorMessage } from '../../utils/error'
+
 
 type Props = {
     formChangeHandler?: () => void
 }
 
 function LoginForm({formChangeHandler}: Props) {
-    const [emial, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const { user } = useAppContext()
+    const navigate = useNavigate()
 
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
+
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setLoading(true)
+
+        try {
+            const data = await login(email, password)
+            user.setIsAuth(true)
+            user.setUser(data)
+            navigate(DASHBOARD_ROUTE)
+        } catch (e: any) {
+            toast.error(getErrorMessage(e))
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -32,7 +56,7 @@ function LoginForm({formChangeHandler}: Props) {
                     id="email"
                     name="email"
                     type="email"
-                    value={emial}
+                    value={email}
                     placeholder="Enter your email..."
                     onChange={e => setEmail(e.target.value)}
                     required
@@ -47,7 +71,12 @@ function LoginForm({formChangeHandler}: Props) {
                     onChange={e => setPassword(e.target.value)}
                     required
                 />
-                <SubmitButton>Sign In</SubmitButton>
+                <SubmitButton disabled={loading}>
+                    <span className='flex items-center gap-2'>
+                        Sign In
+                        {loading && <Spinner size="sm" />}
+                    </span>
+                </SubmitButton>
             </form>
             <p className="text-center mt-3">
                 Don't have an account?&nbsp;
