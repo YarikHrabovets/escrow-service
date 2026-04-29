@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE } from '../../utils/constants'
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../../main'
+import DefaultAvatar from '../../assets/default_avatar.png'
 
 function Header() {
     const { user } = useAppContext()
@@ -13,7 +14,7 @@ function Header() {
                     <span className="text-xl font-bold text-primary">SecureEscrow</span>
                 </NavLink>
             </div>
-            <div className="flex-none space-x-6">
+            <div className="flex items-center space-x-6">
                 <NavLink
                     to={FEATURES_ROUTE}
                     className={({ isActive }) => {
@@ -30,10 +31,14 @@ function Header() {
                 >
                     Pricing
                 </NavLink>
-                {/* TODO: finish header dashboard link */}
                 {user.isAuth ? 
                     (
-                        <div></div>
+                        <NavLink 
+                            to={DASHBOARD_ROUTE}
+                            className="border border-stone-400 rounded-full p-1"
+                        >
+                            <img className="h-7" src={user.user?.avatar_url || DefaultAvatar} alt="User Avatar" />
+                        </NavLink>
                     )
                     :
                     (

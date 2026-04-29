@@ -6,6 +6,7 @@ import CenteredSpinner from './components/ui/CenteredSpinner'
 import { router } from './router'
 import { useAppContext } from './main'
 import { refresh } from './api/authAPI'
+import { getMe } from './api/userAPI'
 
 function App() {
     const { user } = useAppContext()
@@ -15,6 +16,9 @@ function App() {
         const initAuth = async () => {
             try {
                 await refresh()
+                const data = await getMe()
+
+                user.setUser(data)
                 user.setIsAuth(true)
             } catch (e: any) {
                 user.logout()

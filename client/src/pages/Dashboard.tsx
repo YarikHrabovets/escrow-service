@@ -1,6 +1,8 @@
 import { useAppContext } from '../main'
 import { observer } from 'mobx-react-lite'
 import { logout } from '../api/authAPI'
+import FreelancerDashboard from '../components/FreelancerDashboard'
+import ClientDashboard from '../components/ClientDashboard'
 
 function Dashboard() {
     const { user } = useAppContext()
@@ -16,13 +18,10 @@ function Dashboard() {
     }
 
     return (
-        <div>
-            <p>email: {user.user?.email}</p>
-            <p>username: {user.user?.username}</p>
-            <p>fullname: {user.user?.full_name}</p>
-            <p>role: {user.user?.role}</p>
-            <button className="btn btn-warning" onClick={logoutHandler}>Log Out</button>
-        </div>
+        <>
+            {user.user && user.user.role === 'freelancer' && <FreelancerDashboard logoutHandler={logoutHandler} />}
+            {user.user && user.user.role === 'client' && <ClientDashboard logoutHandler={logoutHandler} />}
+        </>
     )
 }
 
