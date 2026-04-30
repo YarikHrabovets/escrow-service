@@ -8,10 +8,10 @@ function Header() {
     const { user } = useAppContext()
 
     return (
-        <header className="navbar bg-base-100 px-10 sticky top-0 z-50 backdrop-blur">
+        <header className="navbar bg-base-300 px-10 sticky top-0 z-50 border-b border-neutral-700">
             <div className="flex-1">
                 <NavLink to={HOME_ROUTE}>
-                    <span className="text-xl font-bold text-primary">SecureEscrow</span>
+                    <span className="text-xl font-bold text-primary">EscrowX</span>
                 </NavLink>
             </div>
             <div className="flex items-center space-x-6">
@@ -35,9 +35,9 @@ function Header() {
                     (
                         <NavLink 
                             to={DASHBOARD_ROUTE}
-                            className="border border-stone-400 rounded-full p-1"
+                            className="border border-neutral-700 h-7 w-7 rounded-full overflow-hidden"
                         >
-                            <img className="h-7" src={user.user?.avatar_url || DefaultAvatar} alt="User Avatar" />
+                            <img className="w-full h-full object-cover" src={user.user?.avatar_url || DefaultAvatar} alt="User Avatar" />
                         </NavLink>
                     )
                     :

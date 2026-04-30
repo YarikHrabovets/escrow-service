@@ -8,7 +8,7 @@ function Button({children, onClick}: Props) {
         <button
             type="button"
             onClick={onClick}
-            className="btn btn-primary rounded-xl"
+            className="btn btn-primary rounded-md"
         >
             {children}
         </button>

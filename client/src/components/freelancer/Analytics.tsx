@@ -14,8 +14,8 @@ const Analytics = () => {
             {
                 data: [90, 10],
                 backgroundColor: [
-                    'hsl(var(--p))', // daisy primary
-                    '#1f2937' // dark gray
+                    '#5654E8',
+                    '#1f2937'
                 ],
                 borderWidth: 0
             }
@@ -30,24 +30,21 @@ const Analytics = () => {
     }
 
     return (
-        <div className="bg-base-200 p-6 rounded-2xl shadow-lg w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Analytics</h2>
-                <span>↗</span>
-            </div>
-
-            <div className="relative w-40 h-40 mx-auto">
-                <Doughnut data={data} options={options} />
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className="text-2xl font-bold">90%</p>
-                    <p className="text-sm text-gray-500">Performance</p>
+        <div className="bg-base-200 border border-base-300 p-7 rounded-xl shadow-sm w-full max-w-md flex flex-col justify-between">
+            <div>
+                <h2 className="text-lg font-semibold mb-4">Analytics</h2>
+                <div className="relative w-40 h-40 mx-auto">
+                    <Doughnut data={data} options={options} />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <p className="text-2xl font-bold">90%</p>
+                        <p className="text-sm text-gray-500">Performance</p>
+                    </div>
                 </div>
             </div>
-
             <div className="flex gap-4 mt-6">
                 <div className="flex-1 bg-base-100 p-3 rounded-xl text-center">
                     <p className="text-lg font-semibold">90%</p>
-                    <p className="text-xs text-gray-500">Respond rate</p>
+                    <p className="text-xs text-gray-500">Response rate</p>
                 </div>
                 <div className="flex-1 bg-base-100 p-3 rounded-xl text-center">
                     <p className="text-lg font-semibold">1,298</p>
