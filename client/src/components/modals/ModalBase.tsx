@@ -1,15 +1,17 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { formVariants, transition } from '../../animations/formVariants'
+import Spinner from '../ui/Spinner'
 
 type Props = {
     title: string,
     children: React.ReactNode,
     isOpen: boolean,
     setIsOpen: (v: boolean) => void,
-    modalHandler: (e: React.FormEvent<HTMLFormElement>) => void
+    modalHandler: (e: React.FormEvent<HTMLFormElement>) => void,
+    loading: boolean
 }
 
-function ModalBase({title, children, isOpen, setIsOpen, modalHandler}: Props) {
+function ModalBase({title, children, isOpen, setIsOpen, modalHandler, loading}: Props) {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -36,13 +38,15 @@ function ModalBase({title, children, isOpen, setIsOpen, modalHandler}: Props) {
                                     <div className="flex flex-col gap-3 mt-3">
                                         <button
                                             type="submit"
-                                            className="btn btn-outline btn-primary btn-block"
+                                            className="btn btn-primary btn-block"
+                                            disabled={loading}
                                         >
+                                            {loading && <Spinner size="sm" />}
                                             Save changes
                                         </button>
                                         <button
                                             type="button"
-                                            className="btn btn-outline btn-block"
+                                            className="btn btn-warning btn-block"
                                             onClick={() => setIsOpen(false)}
                                         >
                                             Cancel

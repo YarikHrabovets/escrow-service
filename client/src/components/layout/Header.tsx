@@ -35,7 +35,7 @@ function Header() {
                     (
                         <NavLink 
                             to={DASHBOARD_ROUTE}
-                            className="border border-neutral-700 h-7 w-7 rounded-full overflow-hidden"
+                            className="border border-neutral-700 h-8 w-8 rounded-full overflow-hidden"
                         >
                             <img className="w-full h-full object-cover" src={user.user?.avatar_url || DefaultAvatar} alt="User Avatar" />
                         </NavLink>
