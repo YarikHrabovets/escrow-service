@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -48,3 +49,18 @@ async def get_jobs(db: DB, limit: int = 20, offset: int = 0) -> list[JobSummary]
     jobs = result.scalars().all()
 
     return [JobSummary.model_validate(job) for job in jobs]
+
+
+async def get_job(job_id: UUID, db: DB) -> JobRead:
+    result = await db.execute(
+        select(Job)
+        .where(Job.id == job_id)
+        .options(selectinload(Job.client))
+    )
+
+    job = result.scalar_one_or_none()
+
+    if not job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+    return JobRead.model_validate(job)

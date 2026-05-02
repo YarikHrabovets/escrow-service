@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Query
+from uuid import UUID
 
 from app.dependencies.auth import CurrentUser, DB
 from app.schemas.job import JobCreate, JobRead, JobSummary
@@ -13,3 +14,7 @@ async def create_job(payload: JobCreate, current_user: CurrentUser, db: DB) -> J
 @router.get("/", response_model=list[JobSummary])
 async def get_jobs(db: DB, limit: int = Query(default=20, ge=1, le=100), offset: int = Query(default=0, ge=0)) -> list[JobSummary]:
     return await job_service.get_jobs(db=db, limit=limit, offset=offset)
+
+@router.get("/{job_id}", response_model=JobRead)
+async def get_job(job_id: UUID, db: DB) -> JobRead:
+    return await job_service.get_job(job_id=job_id, db=db)
