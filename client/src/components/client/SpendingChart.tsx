@@ -191,7 +191,7 @@ const Earning = () => {
                 </div>
             </div>
             <div className="mb-4">
-                <p className="text-sm text-gray-500">Income</p>
+                <p className="text-sm text-gray-500">Spending</p>
                 <p className="text-3xl font-bold">
                     ${current.data.reduce((a, b) => a + b, 0).toLocaleString()}
                 </p>

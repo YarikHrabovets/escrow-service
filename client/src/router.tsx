@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import CenteredSpinner from './components/ui/CenteredSpinner'
-import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE } from './utils/constants'
+import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE, JOBS_ROUTE } from './utils/constants'
 
 import PublicOnlyRoute from './routes/PublicOnlyRoute'
 import PrivateRoute from './routes/PrivateRoute'
@@ -12,6 +12,7 @@ const Auth = lazy(() => import('./pages/Auth'))
 const Pricing = lazy(() => import('./pages/Pricing'))
 const Features = lazy(() => import('./pages/Features'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Jobs = lazy(() => import('./pages/Jobs'))
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -30,6 +31,11 @@ export const router = createBrowserRouter(
                 <Route path={FEATURES_ROUTE} element={
                     <Suspense fallback={<CenteredSpinner size="xl" />}>
                         <Features />
+                    </Suspense>
+                } />
+                <Route path={JOBS_ROUTE} element={
+                    <Suspense fallback={<CenteredSpinner size="xl" />}>
+                        <Jobs />
                     </Suspense>
                 } />
 

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE } from '../../utils/constants'
+import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE, JOBS_ROUTE } from '../../utils/constants'
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../../main'
 import DefaultAvatar from '../../assets/default_avatar.png'
@@ -15,6 +15,14 @@ function Header() {
                 </NavLink>
             </div>
             <div className="flex items-center space-x-6">
+                <NavLink
+                    to={JOBS_ROUTE}
+                    className={({ isActive }) => {
+                        return isActive ? "link link-hover" : "link link-hover";
+                    }}
+                >
+                    Jobs
+                </NavLink>
                 <NavLink
                     to={FEATURES_ROUTE}
                     className={({ isActive }) => {
