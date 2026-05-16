@@ -42,6 +42,12 @@ class User(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # Relationships
+    jobs: Mapped[list["Job"]] = relationship( # noqa: F821
+        "Job",
+        back_populates="client",
+        cascade="all, delete-orphan",
+    )
+
     deals_as_client: Mapped[list["Deal"]] = relationship( # noqa: F821
         "Deal",
         foreign_keys="Deal.client_id",
@@ -52,7 +58,7 @@ class User(Base):
         foreign_keys="Deal.freelancer_id",
         back_populates="freelancer"
     )
-    messages_sent: Mapped[list["Message"]] = relationship(
+    messages_sent: Mapped[list["Message"]] = relationship( # noqa: F821
         "Message", back_populates="sender"
     )
     disputes_raised: Mapped[list["Dispute"]] = relationship(  # noqa: F821
