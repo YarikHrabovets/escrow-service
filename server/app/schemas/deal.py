@@ -9,6 +9,7 @@ from pydantic import Field, model_validator
 from .base import AppSchema
 from .user import UserPreview
 from .milestone import MilestoneRead
+from .currency import Currency
 from app.models.deal import DealStatus
 
 
@@ -17,7 +18,7 @@ class DealCreate(AppSchema):
     title: str = Field(min_length=5, max_length=255)
     description: str | None = Field(default=None, max_length=5000)
     amount: Decimal = Field(gt=0, decimal_places=6)
-    currency: str = Field(default="USD", max_length=10)
+    currency: Currency = Currency.USD
     deadline: datetime | None = None
     milestone_based: bool = False
     # If milestone_based=True, milestones must be provided
@@ -55,7 +56,7 @@ class DealRead(AppSchema):
     title: str
     description: str | None
     amount: Decimal
-    currency: str
+    currency: Currency
     platform_fee: Decimal
     status: DealStatus
     milestone_based: bool
@@ -74,7 +75,7 @@ class DealSummary(AppSchema):
     id: uuid.UUID
     title: str
     amount: Decimal
-    currency: str
+    currency: Currency
     status: DealStatus
     milestone_based: bool
     deadline: datetime | None

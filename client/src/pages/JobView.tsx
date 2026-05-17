@@ -1,16 +1,11 @@
 import { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useAppContext } from '../main'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { getErrorMessage } from '../utils/error'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-    faBriefcase,
-    faCalendarDays,
-    faDollarSign,
-    faUser,
-    faArrowLeft,
-    faStar,
-    faCheckCircle
-} from '@fortawesome/free-solid-svg-icons'
+import {faBriefcase, faCalendarDays, faDollarSign, faUser, faArrowLeft, faStar, faCheckCircle} from '@fortawesome/free-solid-svg-icons'
 import CenteredSpinner from '../components/ui/CenteredSpinner'
 import Button from '../components/ui/Button'
 import { getJob } from '../api/jobAPI'
@@ -41,6 +36,8 @@ function JobView() {
     const { id } = useParams()
     const navigate = useNavigate()
 
+    const { user } = useAppContext()
+
     const [job, setJob] = useState<Job | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -51,8 +48,8 @@ function JobView() {
 
                 const data = await getJob(id)
                 setJob(data)
-            } catch {
-                toast.error('Failed to load job')
+            } catch (e) {
+                toast.error(getErrorMessage(e))
             } finally {
                 setLoading(false)
             }
@@ -198,13 +195,27 @@ function JobView() {
                         {new Date(job.created_at).toLocaleDateString()}
                     </div>
 
-                    <Button>
-                        Apply for Job
-                    </Button>
+                    {!user.user ? (
+                        <div className="text-sm text-zinc-500">
+                            Sign in to apply for this job
+                        </div>
+                    ) : user.user.id === job.client.id ? (
+                        <div className="text-sm text-zinc-500">
+                            This is your posted job
+                        </div>
+                    ) : user.user.role === 'client' ? (
+                        <div className="text-sm text-zinc-500">
+                            Only freelancers can apply for this job
+                        </div>
+                    ) : (
+                        <Button>
+                            Apply for Job
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>
     )
 }
 
-export default JobView
+export default observer(JobView)

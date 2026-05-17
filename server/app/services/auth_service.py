@@ -3,7 +3,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
 
 from app.models.user import User, UserRole
-from app.models.audit_log import AuditLog
 from app.schemas.auth import LoginRequest, TokenRefreshResponse
 from app.schemas.user import UserCreate, UserRead, RegisterRole
 from app.core.security import create_access_token, create_refresh_token, decode_token, hash_password, verify_password
@@ -39,16 +38,6 @@ async def register_user(data: UserCreate, db: AsyncSession, request_ip: str | No
     )
 
     db.add(user)
-    await db.flush()
-
-    db.add(AuditLog(
-        actor_id=user.id,
-        entity_type="user",
-        entity_id=user.id,
-        action="user.registered",
-        meta={"role": user.role.value},
-        ip_address=request_ip,
-    ))
 
     await db.commit()
     await db.refresh(user)
@@ -72,14 +61,6 @@ async def login_user(data: LoginRequest, db: AsyncSession, request_ip: str | Non
 
     user.last_ip = request_ip
     user.last_login_at = datetime.now(timezone.utc)
-
-    db.add(AuditLog(
-        actor_id=user.id,
-        entity_type="user",
-        entity_id=user.id,
-        action="user.login",
-        ip_address=request_ip,
-    ))
 
     await db.commit()
     await db.refresh(user)

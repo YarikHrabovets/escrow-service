@@ -25,7 +25,7 @@ function Profile() {
 
     return (
         <>
-            <div className="bg-base-200 border border-base-300 p-7 rounded-xl shadow-sm flex justify-between items-center flex-col gap-5 mb-5">
+            <div className="bg-zinc-900 border border-zinc-700 p-7 rounded-xl shadow-sm flex justify-between items-center flex-col gap-5 mb-5">
                 <div>
                     <div className="border border-neutral-700 h-32 w-32 rounded-full overflow-hidden mx-auto">
                         <img className="w-full h-full object-cover" src={user.user?.avatar_url || DefaultAvatar} alt="User Avatar" />

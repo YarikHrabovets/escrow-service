@@ -1,6 +1,6 @@
 function FreelancerMessages() {
     return (
-        <div className="bg-base-200 border border-base-300 rounded-xl p-7 shadow-sm">
+        <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-7 shadow-sm">
             Freelancer Messages
         </div>
     )

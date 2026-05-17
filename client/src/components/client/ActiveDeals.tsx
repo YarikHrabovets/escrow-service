@@ -6,14 +6,14 @@ const deals = [
 
 const ActiveDeals = () => {
     return (
-        <div className="bg-base-200 border border-base-300 rounded-xl p-7 shadow-sm">
+        <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-7 shadow-sm">
             <h2 className="font-semibold mb-4">Active Deals</h2>
 
             <div className="space-y-3">
                 {deals.map(d => (
                     <div
                         key={d.id}
-                        className="bg-base-100 border border-base-300 rounded-lg p-4 flex justify-between items-center"
+                        className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex justify-between items-center"
                     >
                         <div>
                             <p className="font-medium">{d.title}</p>

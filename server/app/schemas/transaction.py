@@ -5,6 +5,7 @@ from decimal import Decimal
 from pydantic import Field
 
 from .base import AppSchema
+from .currency import Currency
 from app.models.transaction import TransactionType, TransactionStatus
 
 
@@ -17,7 +18,7 @@ class TransactionCreate(AppSchema):
     milestone_id: uuid.UUID | None = None   # None = full-deal payment
     type: TransactionType
     amount: Decimal = Field(gt=0, decimal_places=6)
-    currency: str = Field(default="USD", max_length=10)
+    currency: Currency = Currency.USD
     provider_ref: str | None = Field(default=None, max_length=255)
 
 
@@ -27,7 +28,7 @@ class TransactionRead(AppSchema):
     milestone_id: uuid.UUID | None
     type: TransactionType
     amount: Decimal
-    currency: str
+    currency: Currency
     provider_ref: str | None
     status: TransactionStatus
     created_at: datetime
@@ -38,7 +39,7 @@ class TransactionSummary(AppSchema):
     id: uuid.UUID
     type: TransactionType
     amount: Decimal
-    currency: str
+    currency: Currency
     status: TransactionStatus
     milestone_id: uuid.UUID | None
     created_at: datetime

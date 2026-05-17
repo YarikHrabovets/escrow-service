@@ -47,7 +47,6 @@ class User(Base):
         back_populates="client",
         cascade="all, delete-orphan",
     )
-
     deals_as_client: Mapped[list["Deal"]] = relationship( # noqa: F821
         "Deal",
         foreign_keys="Deal.client_id",
@@ -70,9 +69,6 @@ class User(Base):
         "Dispute",
         foreign_keys="Dispute.resolved_by",
         back_populates="resolver"
-    )
-    audit_logs: Mapped[list["AuditLog"]] = relationship(  # noqa: F821
-        "AuditLog", back_populates="actor"
     )
     notifications: Mapped[list["Notification"]] = relationship(  # noqa: F821
         "Notification", back_populates="user"

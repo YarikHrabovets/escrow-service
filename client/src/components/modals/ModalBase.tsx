@@ -23,7 +23,7 @@ function ModalBase({title, children, isOpen, setIsOpen, modalHandler, loading}: 
                         transition={transition}
                     >
                         <div className='relative mx-auto p-4 max-w-7xl my-auto'>
-                            <div className='bg-base-200 border border-base-300 p-7 rounded-lg shadow-sm'>
+                            <div className='bg-zinc-900 border border-zinc-700 p-7 rounded-lg shadow-sm'>
                                 <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-xl font-semibold">{title}</h2>
                                     <button

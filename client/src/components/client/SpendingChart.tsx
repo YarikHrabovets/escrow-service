@@ -166,7 +166,7 @@ const Earning = () => {
     }
 
     return (
-        <div className="bg-base-200 border border-base-300 p-7 rounded-xl shadow-sm w-full">
+        <div className="bg-zinc-900 border border-zinc-700 p-7 rounded-xl shadow-sm w-full">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Spending reports</h2>
                 <div className="flex gap-2">

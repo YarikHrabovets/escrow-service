@@ -30,7 +30,7 @@ const Analytics = () => {
     }
 
     return (
-        <div className="bg-base-200 border border-base-300 p-7 rounded-xl shadow-sm w-full max-w-md flex flex-col justify-between">
+        <div className="bg-zinc-900 border border-zinc-700 p-7 rounded-xl shadow-sm w-full max-w-md flex flex-col justify-between">
             <div>
                 <h2 className="text-lg font-semibold mb-4">Analytics</h2>
                 <div className="relative w-40 h-40 mx-auto">
@@ -42,11 +42,11 @@ const Analytics = () => {
                 </div>
             </div>
             <div className="flex gap-4 mt-6">
-                <div className="flex-1 bg-base-100 p-3 rounded-xl text-center">
+                <div className="flex-1 bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-center">
                     <p className="text-lg font-semibold">90%</p>
                     <p className="text-xs text-gray-500">Response rate</p>
                 </div>
-                <div className="flex-1 bg-base-100 p-3 rounded-xl text-center">
+                <div className="flex-1 bg-zinc-950 border border-zinc-800 p-3 rounded-xl text-center">
                     <p className="text-lg font-semibold">1,298</p>
                     <p className="text-xs text-gray-500">Order completion</p>
                 </div>
