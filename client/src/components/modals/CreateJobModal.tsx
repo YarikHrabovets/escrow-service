@@ -3,6 +3,7 @@ import { fetchCurrencies } from '../../api/currencyAPI'
 import ModalBase from './ModalBase'
 import Input from '../ui/Input'
 import Select from '../ui/Select'
+import TextArea from '../ui/TextArea'
 import { createJob } from '../../api/jobAPI'
 import { toast } from 'react-toastify'
 import { getErrorMessage } from '../../utils/error'
@@ -10,6 +11,7 @@ import { getErrorMessage } from '../../utils/error'
 type Props = {
     isOpen: boolean
     setIsOpen: (v: boolean) => void
+    onCreated?: () => void
 }
 
 type Currency = {
@@ -18,7 +20,7 @@ type Currency = {
     type: string
 }
 
-function CreateJobModal({ isOpen, setIsOpen }: Props) {
+function CreateJobModal({ isOpen, setIsOpen, onCreated }: Props) {
     const [title, setTitle] = useState<string>('')
     const [description, setDescription] = useState<string>('')
     const [budget, setBudget] = useState<string>('')
@@ -88,6 +90,8 @@ function CreateJobModal({ isOpen, setIsOpen }: Props) {
                 deadline || ''
             )
 
+            onCreated?.()
+
             toast.success('Job was successfully created')
             resetForm()
             setIsOpen(false)
@@ -116,39 +120,32 @@ function CreateJobModal({ isOpen, setIsOpen }: Props) {
                     placeholder="Enter job title..."
                     onChange={e => setTitle(e.target.value)}
                 />
-
-                <Input
-                    label="Job description:"
-                    id="description"
-                    name="description"
-                    type="text"
-                    value={description}
-                    placeholder="Enter job description..."
-                    onChange={e => setDescription(e.target.value)}
-                />
-
-                <Input
-                    label="Job budget:"
-                    id="budget"
-                    name="budget"
-                    type="number"
-                    value={budget}
-                    placeholder="Enter job budget..."
-                    onChange={e => setBudget(e.target.value)}
-                />
-
-                <Select
-                    label="Currency:"
-                    id="currency"
-                    name="currency"
-                    value={currency}
-                    options={currencies.map(item => ({
-                        label: `${item.code} - ${item.name}`,
-                        value: item.code,
-                    }))}
-                    onChange={e => setCurrency(e.target.value)}
-                />
-
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
+                    <div className="sm:col-span-8">
+                        <Input
+                            label="Job budget:"
+                            id="budget"
+                            name="budget"
+                            type="number"
+                            value={budget}
+                            placeholder="Enter job budget..."
+                            onChange={e => setBudget(e.target.value)}
+                        />
+                    </div>
+                    <div className="sm:col-span-4">
+                        <Select
+                            label="Currency:"
+                            id="currency"
+                            name="currency"
+                            value={currency}
+                            options={currencies.map(item => ({
+                                label: `${item.code} - ${item.name}`,
+                                value: item.code,
+                            }))}
+                            onChange={e => setCurrency(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <Input
                     label="Deadline:"
                     id="deadline"
@@ -157,6 +154,14 @@ function CreateJobModal({ isOpen, setIsOpen }: Props) {
                     value={deadline}
                     placeholder="Select deadline..."
                     onChange={e => setDeadline(e.target.value)}
+                />
+                <TextArea
+                    label="Job description:"
+                    id="description"
+                    name="description"
+                    value={description}
+                    placeholder="Enter job description..."
+                    onChange={e => setDescription(e.target.value)}
                 />
             </div>
         </ModalBase>

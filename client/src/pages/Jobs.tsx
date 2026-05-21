@@ -26,6 +26,7 @@ function Jobs() {
     const [jobs, setJobs] = useState<Job[]>([])
     const [loading, setLoading] = useState(true)
     const [isOpen, setIsOpen] = useState(false)
+    const [refreshKey, setRefreshKey] = useState(0)
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -40,7 +41,7 @@ function Jobs() {
         }
 
         fetchJobs()
-    }, [])
+    }, [refreshKey])
 
     if (loading) {
         return (
@@ -85,7 +86,7 @@ function Jobs() {
                     </div>
                 )}
             </div>
-            <CreateJobModal isOpen={isOpen} setIsOpen={setIsOpen} />
+            <CreateJobModal isOpen={isOpen} setIsOpen={setIsOpen} onCreated={() => setRefreshKey(prev => prev + 1)} />
         </>
     )
 }
