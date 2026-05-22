@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     POSTGRES_HOST: str = "localhost"
-    POSTGRES_PORT: int = 5432
+    POSTGRES_EXTERNAL_PORT: int = 5432
 
     JWT_SECRET: str
     JWT_ALGORITHM: str
@@ -23,7 +23,7 @@ class Settings(BaseSettings):
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:"
             f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:"
-            f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+            f"{self.POSTGRES_EXTERNAL_PORT}/{self.POSTGRES_DB}"
         )
 
 settings = Settings()

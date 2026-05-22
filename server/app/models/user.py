@@ -73,6 +73,11 @@ class User(Base):
     notifications: Mapped[list["Notification"]] = relationship(  # noqa: F821
         "Notification", back_populates="user"
     )
+    job_applications: Mapped[list["JobApplication"]] = relationship( # noqa: F821
+        "JobApplication",
+        back_populates="freelancer",
+        cascade="all, delete-orphan",
+    )
 
     @property
     def dispute_rate(self) -> float:

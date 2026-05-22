@@ -60,5 +60,11 @@ class Job(Base):
         back_populates="jobs",
     )
 
+    applications: Mapped[list["JobApplication"]] = relationship( # noqa: F821
+        "JobApplication",
+        back_populates="job",
+        cascade="all, delete-orphan",
+    )
+
     def __repr__(self) -> str:
         return f"<Job id={self.id} status={self.status} budget={self.budget}>"

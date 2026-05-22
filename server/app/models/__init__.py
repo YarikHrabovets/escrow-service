@@ -7,3 +7,4 @@ from .notification import Notification
 from .transaction import Transaction
 from .user import User
 from .job import Job
+from .job_application import JobApplication
