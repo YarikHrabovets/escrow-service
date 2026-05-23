@@ -75,3 +75,30 @@ async def apply_for_job(job_id: UUID, payload: JobApplicationCreate, current_use
     application = result.scalar_one()
 
     return JobApplicationRead.model_validate(application)
+
+
+async def get_my_job_application(job_id: UUID, current_user: CurrentUser, db: DB) -> JobApplicationRead | None:
+    if current_user.role != UserRole.FREELANCER:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only freelancers can check their job application")
+
+    job_result = await db.execute(select(Job).where(Job.id == job_id))
+    job = job_result.scalar_one_or_none()
+
+    if not job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+    result = await db.execute(
+        select(JobApplication)
+        .where(
+            JobApplication.job_id == job_id,
+            JobApplication.freelancer_id == current_user.id,
+        )
+        .options(selectinload(JobApplication.freelancer))
+    )
+
+    application = result.scalar_one_or_none()
+
+    if not application:
+        return None
+
+    return JobApplicationRead.model_validate(application)

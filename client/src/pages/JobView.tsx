@@ -5,41 +5,37 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getErrorMessage } from '../utils/error'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faBriefcase, faCalendarDays, faDollarSign, faUser, faArrowLeft, faStar, faCheckCircle} from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+
 import CenteredSpinner from '../components/ui/CenteredSpinner'
-import Button from '../components/ui/Button'
-import { getJob } from '../api/jobAPI'
+import ApplyJobModal from '../components/modals/ApplyJobModal'
 
-type Client = {
-    id: string
-    username: string | null
-    full_name: string | null
-    avatar_url: string | null
-    role: string
-    reputation_score: number
-    completed_deals: number
-}
+import JobHeader from '../components/job/JobHeader'
+import JobInfoCards from '../components/job/JobInfoCards'
+import JobDescription from '../components/job/JobDescription'
+import JobActions from '../components/job/JobActions'
+import JobApplicationsList from '../components/job/JobApplicationsList'
 
-type Job = {
-    id: string
-    title: string
-    description: string | null
-    budget: string
-    currency: string
-    deadline: string | null
-    status: string
-    created_at: string
-    client: Client
-}
+import { getJob, getJobApplications, getMyJobApplication } from '../api/jobAPI'
+import type { Job, JobApplication } from '../types/job'
 
 function JobView() {
     const { id } = useParams()
     const navigate = useNavigate()
-
     const { user } = useAppContext()
 
     const [job, setJob] = useState<Job | null>(null)
     const [loading, setLoading] = useState(true)
+
+    const [isApplyOpen, setIsApplyOpen] = useState(false)
+
+    const [applications, setApplications] = useState<JobApplication[]>([])
+    const [applicationsLoading, setApplicationsLoading] = useState(false)
+
+    const [myApplication, setMyApplication] = useState<JobApplication | null>(null)
+    const [checkingMyApplication, setCheckingMyApplication] = useState(false)
+
+    const isOwner = Boolean(user.user && job && user.user.id === job.client.id)
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -58,6 +54,44 @@ function JobView() {
         fetchJob()
     }, [id])
 
+    useEffect(() => {
+        const fetchApplications = async () => {
+            if (!id || !job || !user.user || user.user.id !== job.client.id) return
+
+            setApplicationsLoading(true)
+
+            try {
+                const data = await getJobApplications(id)
+                setApplications(data)
+            } catch (e) {
+                toast.error(getErrorMessage(e))
+            } finally {
+                setApplicationsLoading(false)
+            }
+        }
+
+        fetchApplications()
+    }, [id, job, user.user])
+
+    useEffect(() => {
+        const fetchMyApplication = async () => {
+            if (!id || !job || !user.user || user.user.role !== 'freelancer') return
+
+            setCheckingMyApplication(true)
+
+            try {
+                const data = await getMyJobApplication(id)
+                setMyApplication(data)
+            } catch (e) {
+                toast.error(getErrorMessage(e))
+            } finally {
+                setCheckingMyApplication(false)
+            }
+        }
+
+        fetchMyApplication()
+    }, [id, job, user.user])
+
     if (loading) {
         return <CenteredSpinner size="xl" />
     }
@@ -69,8 +103,6 @@ function JobView() {
             </div>
         )
     }
-
-    const clientName = job.client.full_name || job.client.username || 'Unknown client'
 
     return (
         <div className="max-w-5xl mx-auto py-10">
@@ -84,136 +116,35 @@ function JobView() {
             </button>
 
             <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div>
-                        <div className="flex items-center gap-3 mb-3">
-                            <FontAwesomeIcon
-                                icon={faBriefcase}
-                                className="text-primary text-xl"
-                            />
+                <JobHeader job={job} />
 
-                            <h1 className="text-4xl font-bold text-white">
-                                {job.title}
-                            </h1>
-                        </div>
+                <JobInfoCards job={job} />
 
-                        <div className="flex items-center gap-3 text-zinc-400">
-                            {job.client.avatar_url ? (
-                                <img
-                                    src={job.client.avatar_url}
-                                    alt={clientName}
-                                    className="w-9 h-9 rounded-full object-cover border border-zinc-700"
-                                />
-                            ) : (
-                                <div className="w-9 h-9 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-                                    <FontAwesomeIcon icon={faUser} className="text-zinc-500" />
-                                </div>
-                            )}
+                <JobDescription job={job} />
 
-                            <div>
-                                <div className="text-white font-medium">
-                                    {clientName}
-                                </div>
+                {isOwner && (
+                    <JobApplicationsList
+                        job={job}
+                        applications={applications}
+                        loading={applicationsLoading}
+                    />
+                )}
 
-                                <div className="text-sm text-zinc-500">
-                                    {job.client.role}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-400">
-                            <div className="flex items-center gap-2">
-                                <FontAwesomeIcon icon={faStar} className="text-orange-400" />
-                                <span>
-                                    Reputation {job.client.reputation_score}
-                                </span>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <FontAwesomeIcon icon={faCheckCircle} className="text-green-400" />
-                                <span>
-                                    {job.client.completed_deals} completed deals
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <span className="px-4 py-2 rounded-full text-sm font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                        {job.status}
-                    </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
-                        <div className="flex items-center gap-2 text-zinc-400 mb-2">
-                            <FontAwesomeIcon
-                                icon={faDollarSign}
-                                className="text-emerald-400"
-                            />
-
-                            <span>Budget</span>
-                        </div>
-
-                        <div className="text-3xl font-bold text-white">
-                            {job.currency} {Number(job.budget).toFixed(2)}
-                        </div>
-                    </div>
-
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5">
-                        <div className="flex items-center gap-2 text-zinc-400 mb-2">
-                            <FontAwesomeIcon
-                                icon={faCalendarDays}
-                                className="text-orange-400"
-                            />
-
-                            <span>Deadline</span>
-                        </div>
-
-                        <div className="text-2xl font-semibold text-white">
-                            {job.deadline
-                                ? new Date(job.deadline).toLocaleDateString()
-                                : 'No deadline'}
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mt-10">
-                    <h2 className="text-2xl font-semibold text-white mb-4">
-                        Description
-                    </h2>
-
-                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-6">
-                        <p className="text-zinc-300 whitespace-pre-wrap leading-relaxed">
-                            {job.description || 'No description provided.'}
-                        </p>
-                    </div>
-                </div>
-
-                <div className="mt-10 flex items-center justify-between flex-wrap gap-4">
-                    <div className="text-sm text-zinc-500">
-                        Posted on{' '}
-                        {new Date(job.created_at).toLocaleDateString()}
-                    </div>
-
-                    {!user.user ? (
-                        <div className="text-sm text-zinc-500">
-                            Sign in to apply for this job
-                        </div>
-                    ) : user.user.id === job.client.id ? (
-                        <div className="text-sm text-zinc-500">
-                            This is your posted job
-                        </div>
-                    ) : user.user.role === 'client' ? (
-                        <div className="text-sm text-zinc-500">
-                            Only freelancers can apply for this job
-                        </div>
-                    ) : (
-                        <Button>
-                            Apply for Job
-                        </Button>
-                    )}
-                </div>
+                <JobActions
+                    job={job}
+                    currentUser={user.user}
+                    myApplication={myApplication}
+                    checkingMyApplication={checkingMyApplication}
+                    onApply={() => setIsApplyOpen(true)}
+                />
             </div>
+
+            <ApplyJobModal
+                isOpen={isApplyOpen}
+                setIsOpen={setIsApplyOpen}
+                jobId={job.id}
+                onApplied={(application) => setMyApplication(application)}
+            />
         </div>
     )
 }

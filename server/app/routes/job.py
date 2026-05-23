@@ -36,3 +36,11 @@ async def apply_for_job(job_id: UUID, payload: JobApplicationCreate, current_use
         current_user=current_user,
         db=db,
     )
+
+@router.get("/{job_id}/applications/me", response_model=JobApplicationRead | None)
+async def get_my_job_application(job_id: UUID, current_user: CurrentUser, db: DB) -> JobApplicationRead | None:
+    return await job_application_service.get_my_job_application(
+        job_id=job_id,
+        current_user=current_user,
+        db=db,
+    )

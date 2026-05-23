@@ -14,3 +14,18 @@ export const createJob = async (title: string, description: string, budget: numb
     const { data } = await authHost.post('/job', {title, description, budget, currency, deadline})
     return data
 }
+
+export const applyForJob = async (jobId: string, cover_letter: string, proposed_amount: number | null) => {
+    const { data } = await authHost.post(`/job/${jobId}/applications`, {cover_letter, proposed_amount})
+    return data
+}
+
+export const getJobApplications = async (jobId: string) => {
+    const { data } = await authHost.get(`/job/${jobId}/applications`)
+    return data
+}
+
+export const getMyJobApplication = async (jobId: string) => {
+    const { data } = await authHost.get(`/job/${jobId}/applications/me`)
+    return data
+}
