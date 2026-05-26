@@ -102,3 +102,62 @@ async def get_my_job_application(job_id: UUID, current_user: CurrentUser, db: DB
         return None
 
     return JobApplicationRead.model_validate(application)
+
+
+async def accept_job_application(job_id: UUID, application_id: UUID, current_user: CurrentUser, db: DB) -> JobApplicationRead:
+    if current_user.role != UserRole.CLIENT:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only clients can accept applications")
+
+    job_result = await db.execute(select(Job).where(Job.id == job_id))
+    job = job_result.scalar_one_or_none()
+
+    if not job:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
+
+    if job.client_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the job owner can accept applications")
+
+    if job.status != JobStatus.OPEN:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Job is not open")
+
+    application_result = await db.execute(
+        select(JobApplication).where(
+            JobApplication.id == application_id,
+            JobApplication.job_id == job_id
+        )
+    )
+    application = application_result.scalar_one_or_none()
+
+    if not application:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Application not found")
+
+    if application.status != JobApplicationStatus.PENDING:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only pending applications can be accepted")
+
+    application.status = JobApplicationStatus.ACCEPTED
+    job.status = JobStatus.CLOSED
+
+    other_applications_result = await db.execute(
+        select(JobApplication).where(
+            JobApplication.job_id == job_id,
+            JobApplication.id != application_id,
+            JobApplication.status == JobApplicationStatus.PENDING
+        )
+    )
+
+    other_applications = other_applications_result.scalars().all()
+
+    for other_application in other_applications:
+        other_application.status = JobApplicationStatus.REJECTED
+
+    await db.commit()
+
+    result = await db.execute(
+        select(JobApplication)
+        .where(JobApplication.id == application_id)
+        .options(selectinload(JobApplication.freelancer))
+    )
+
+    application = result.scalar_one()
+
+    return JobApplicationRead.model_validate(application)

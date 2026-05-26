@@ -16,7 +16,7 @@ import JobDescription from '../components/job/JobDescription'
 import JobActions from '../components/job/JobActions'
 import JobApplicationsList from '../components/job/JobApplicationsList'
 
-import { getJob, getJobApplications, getMyJobApplication } from '../api/jobAPI'
+import { getJob, getJobApplications, getMyJobApplication, acceptJobApplication } from '../api/jobAPI'
 import type { Job, JobApplication } from '../types/job'
 
 function JobView() {
@@ -36,6 +36,22 @@ function JobView() {
     const [checkingMyApplication, setCheckingMyApplication] = useState(false)
 
     const isOwner = Boolean(user.user && job && user.user.id === job.client.id)
+
+    const handleAcceptApplication = async (applicationId: string, jobId: string) => {
+        try {
+            await acceptJobApplication(jobId, applicationId)
+
+            toast.success('Freelancer accepted')
+
+            const data = await getJobApplications(jobId)
+            setApplications(data)
+
+            const updatedJob = await getJob(jobId)
+            setJob(updatedJob)
+        } catch (e) {
+            toast.error(getErrorMessage(e))
+        }
+    }
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -127,6 +143,7 @@ function JobView() {
                         job={job}
                         applications={applications}
                         loading={applicationsLoading}
+                        onAccept={(applicationId) => handleAcceptApplication(applicationId, job.id)}
                     />
                 )}
 

@@ -6,7 +6,7 @@ from app.schemas.job import JobCreate, JobRead, JobSummary
 from app.schemas.job_application import JobApplicationRead, JobApplicationCreate
 from app.services import job_service, job_application_service
 
-router = APIRouter(prefix="/job", tags=["jobs"])
+router = APIRouter(prefix="/jobs", tags=["jobs"])
 
 @router.post("/", response_model=JobRead, status_code=201)
 async def create_job(payload: JobCreate, current_user: CurrentUser, db: DB) -> JobRead:
@@ -41,6 +41,15 @@ async def apply_for_job(job_id: UUID, payload: JobApplicationCreate, current_use
 async def get_my_job_application(job_id: UUID, current_user: CurrentUser, db: DB) -> JobApplicationRead | None:
     return await job_application_service.get_my_job_application(
         job_id=job_id,
+        current_user=current_user,
+        db=db,
+    )
+
+@router.patch("/{job_id}/applications/{application_id}/accept", response_model=JobApplicationRead)
+async def accept_job_application(job_id: UUID, application_id: UUID, current_user: CurrentUser, db: DB) -> JobApplicationRead:
+    return await job_application_service.accept_job_application(
+        job_id=job_id,
+        application_id=application_id,
         current_user=current_user,
         db=db,
     )
