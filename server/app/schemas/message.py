@@ -42,3 +42,8 @@ class MessageList(AppSchema):
     items: list[MessageRead]
     total: int
     has_more: bool
+
+    
+class DealWorkSubmit(AppSchema):
+    message: str = Field(min_length=5, max_length=5000)
+    attachment_url: str | None = Field(default=None, max_length=500)

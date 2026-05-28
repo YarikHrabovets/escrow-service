@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -6,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
 from app.dependencies.auth import CurrentUser, DB
+from app.models.deal import Deal, DealStatus
 from app.models.job import Job, JobStatus
 from app.models.job_application import JobApplication, JobApplicationStatus
 from app.models.user import UserRole
@@ -134,6 +136,23 @@ async def accept_job_application(job_id: UUID, application_id: UUID, current_use
     if application.status != JobApplicationStatus.PENDING:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only pending applications can be accepted")
 
+    deal_amount = application.proposed_amount or job.budget
+    platform_fee = deal_amount * Decimal("0.05")
+
+    deal = Deal(
+        job_id=job.id,
+        client_id=job.client_id,
+        freelancer_id=application.freelancer_id,
+        title=job.title,
+        description=job.description,
+        amount=deal_amount,
+        currency=job.currency,
+        platform_fee=platform_fee,
+        deadline=job.deadline,
+        milestone_based=False,
+        status=DealStatus.CREATED
+    )
+
     application.status = JobApplicationStatus.ACCEPTED
     job.status = JobStatus.CLOSED
 
@@ -149,6 +168,8 @@ async def accept_job_application(job_id: UUID, application_id: UUID, current_use
 
     for other_application in other_applications:
         other_application.status = JobApplicationStatus.REJECTED
+
+    db.add(deal)
 
     await db.commit()
 

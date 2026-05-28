@@ -10,6 +10,7 @@ from .base import AppSchema
 from .user import UserPreview
 from .milestone import MilestoneRead
 from .currency import Currency
+from .message import MessageRead
 from app.models.deal import DealStatus
 
 
@@ -64,10 +65,11 @@ class DealRead(AppSchema):
     auto_release_at: datetime | None
     created_at: datetime
     updated_at: datetime
-    # Nested
+
     client: UserPreview
     freelancer: UserPreview
     milestones: list[MilestoneRead] = []
+    messages: list[MessageRead] = []
 
 
 class DealSummary(AppSchema):
