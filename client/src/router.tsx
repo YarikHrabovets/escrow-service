@@ -2,7 +2,10 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import CenteredSpinner from './components/ui/CenteredSpinner'
-import { HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE, JOBS_ROUTE, JOB_VIEW_ROUTE } from './utils/constants'
+import { 
+    HOME_ROUTE, AUTH_ROUTE, PRICING_ROUTE, FEATURES_ROUTE, DASHBOARD_ROUTE, 
+    JOBS_ROUTE, JOB_VIEW_ROUTE, DEAL_VIEW_ROUTE
+} from './utils/constants'
 
 import PublicOnlyRoute from './routes/PublicOnlyRoute'
 import PrivateRoute from './routes/PrivateRoute'
@@ -14,6 +17,7 @@ const Features = lazy(() => import('./pages/Features'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const Jobs = lazy(() => import('./pages/Jobs'))
 const JobView = lazy(() => import('./pages/JobView'))
+const DealView = lazy(() => import('./pages/DealView'))
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -50,6 +54,11 @@ export const router = createBrowserRouter(
                     <Route path={DASHBOARD_ROUTE} element={
                         <Suspense fallback={<CenteredSpinner size="xl" />}>
                             <Dashboard />
+                        </Suspense>
+                    } />
+                    <Route path={DEAL_VIEW_ROUTE} element={
+                        <Suspense fallback={<CenteredSpinner size="xl" />}>
+                            <DealView />
                         </Suspense>
                     } />
                 </Route>

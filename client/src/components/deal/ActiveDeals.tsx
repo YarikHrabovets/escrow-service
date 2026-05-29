@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getDeals } from '../../api/dealAPI'
 import { toast } from 'react-toastify'
 import { getErrorMessage } from '../../utils/error'
-import DealCard from './dealCard'
+import DealCard from './DealCard'
 import Spinner from '../ui/Spinner'
 
 type Deal = {
@@ -19,6 +20,7 @@ type Deal = {
 }
 
 const ActiveDeals = () => {
+    const navigate = useNavigate()
     const [deals, setDeals] = useState<Deal[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -51,6 +53,7 @@ const ActiveDeals = () => {
                         status={d.status}
                         amount={d.amount}
                         currency={d.currency}
+                        onClick={() => navigate(`/deals/${d.id}`)}
                     />
                 ))}
             </div>

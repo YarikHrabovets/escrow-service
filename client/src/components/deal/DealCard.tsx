@@ -6,11 +6,15 @@ type Props = {
     status: string
     amount: string
     currency: string
+    onClick: () => void
 }
 
-function DealCard({title, status, amount, currency}: Props) {
+function DealCard({title, status, amount, currency, onClick}: Props) {
     return (
-        <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex justify-between items-center">
+        <div
+            onClick={onClick}
+            className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 flex justify-between items-center cursor-pointer"
+        >
             <div>
                 <p className="font-medium">{title}</p>
                 <p className="text-sm text-gray-500">{status}</p>
