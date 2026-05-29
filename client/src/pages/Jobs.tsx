@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../main'
 import { getJobs } from '../api/jobAPI'
-import JobCard from '../components/JobCard'
+import JobCard from '../components/job/JobCard'
 import { toast } from 'react-toastify'
 import { getErrorMessage } from '../utils/error'
 import CenteredSpinner from '../components/ui/CenteredSpinner'
@@ -43,11 +43,7 @@ function Jobs() {
         fetchJobs()
     }, [refreshKey])
 
-    if (loading) {
-        return (
-            <CenteredSpinner size="xl" />
-        )
-    }
+    if (loading) return <CenteredSpinner size="xl" />
 
     return (
         <>

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBriefcase, faCalendarDays, faDollarSign } from '@fortawesome/free-solid-svg-icons'
-import Button from './ui/Button'
-import { JOBS_ROUTE } from '../utils/constants'
+import Button from '../ui/Button'
+import { JOBS_ROUTE } from '../../utils/constants'
 
 type Job = {
     id: string

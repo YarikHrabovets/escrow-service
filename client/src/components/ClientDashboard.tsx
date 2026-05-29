@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../main'
 import ClientStats from './client/ClientStats'
-import ActiveDeals from './client/ActiveDeals'
+import ActiveDeals from './deal/ActiveDeals'
 import SpendingChart from './client/SpendingChart'
 import Profile from './Profile'
 import FreelancerMessages from './client/FreelancerMessages'
