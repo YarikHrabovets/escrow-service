@@ -11,6 +11,7 @@ from .user import UserPreview
 from .milestone import MilestoneRead
 from .currency import Currency
 from .message import MessageRead
+from .transaction import TransactionSummary
 from app.models.deal import DealStatus
 
 
@@ -70,6 +71,7 @@ class DealRead(AppSchema):
     freelancer: UserPreview
     milestones: list[MilestoneRead] = []
     messages: list[MessageRead] = []
+    transactions: list[TransactionSummary] = []
 
 
 class DealSummary(AppSchema):

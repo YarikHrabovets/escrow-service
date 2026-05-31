@@ -41,7 +41,8 @@ async def get_deal_detail(deal_id: UUID, current_user: CurrentUser, db: DB) -> D
             selectinload(Deal.client),
             selectinload(Deal.freelancer),
             selectinload(Deal.milestones),
-            selectinload(Deal.messages).selectinload(Message.sender)
+            selectinload(Deal.messages).selectinload(Message.sender),
+            selectinload(Deal.transactions)
         )
     )
 

@@ -10,11 +10,6 @@ export const getDeal = async (dealId: string) => {
     return data
 }
 
-export const fundDeal = async (dealId: string) => {
-    const { data } = await authHost.patch(`/deals/${dealId}/fund`)
-    return data
-}
-
 export const startDealWork = async (dealId: string) => {
     const { data } = await authHost.patch(`/deals/${dealId}/start`)
     return data
