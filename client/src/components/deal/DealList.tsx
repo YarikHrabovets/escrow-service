@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getDeals } from '../../api/dealAPI'
+import { getDeals, getCompletedDeals } from '../../api/dealAPI'
 import { toast } from 'react-toastify'
 import { getErrorMessage } from '../../utils/error'
 import DealCard from './DealCard'
@@ -19,7 +19,11 @@ type Deal = {
     freelancer_id: string
 }
 
-const ActiveDeals = () => {
+type Props = {
+    isActive: boolean
+}
+
+function DealList({ isActive }: Props) {
     const navigate = useNavigate()
     const [deals, setDeals] = useState<Deal[]>([])
     const [loading, setLoading] = useState(true)
@@ -27,7 +31,12 @@ const ActiveDeals = () => {
     useEffect(() => {
         const fetchDeals = async () => {
             try {
-                const data = await getDeals()
+                let data
+                if (isActive) {
+                    data = await getDeals()
+                } else {
+                    data = await getCompletedDeals()
+                }
                 setDeals(data)
             } catch (e) {
                 toast.error(getErrorMessage(e))
@@ -43,7 +52,7 @@ const ActiveDeals = () => {
 
     return (
         <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-7 shadow-sm">
-            <h2 className="font-semibold mb-4">Active Deals</h2>
+            <h2 className="font-semibold mb-4">{isActive ? "Active Deals" : "Completed Deals"}</h2>
 
             <div className="space-y-3">
                 {deals.map(d => (
@@ -61,4 +70,4 @@ const ActiveDeals = () => {
     )
 }
 
-export default ActiveDeals
+export default DealList

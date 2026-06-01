@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 import { useAppContext } from '../main'
 import Analytics from './freelancer/Analytics'
 import Earning from './freelancer/Earnings'
-import ActiveDeals from './deal/ActiveDeals'
+import DealList from './deal/DealList'
 import ClientMessages from './freelancer/ClientMessages'
 import Profile from './Profile'
 
@@ -19,7 +19,8 @@ function FreelancerDashboard() {
                         <Analytics />
                         <Earning />
                     </div>
-                    <ActiveDeals />
+                    <DealList isActive={true} />
+                    <DealList isActive={false} />
                 </div>
                 <div className="basis-1/4">
                     <Profile />

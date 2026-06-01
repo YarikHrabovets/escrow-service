@@ -140,8 +140,9 @@ async def handle_stripe_webhook(request: Request, db: DB) -> dict:
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
 
-        deal_id = session.get("metadata", {}).get("deal_id")
-        payment_status = session.get("payment_status")
+        metadata = session["metadata"] or {}
+        deal_id = metadata["deal_id"] if "deal_id" in metadata else None
+        payment_status = session["payment_status"]
 
         if deal_id and payment_status == "paid":
             await confirm_deal_funding(
@@ -166,6 +167,7 @@ async def confirm_deal_funding(deal_id: UUID, checkout_session_id: str, db: DB) 
     deal = deal_result.scalar_one_or_none()
 
     if not deal:
+        print("Stripe funding skipped: deal not found", deal_id)
         return
 
     transaction_result = await db.execute(
@@ -178,16 +180,19 @@ async def confirm_deal_funding(deal_id: UUID, checkout_session_id: str, db: DB) 
     transaction = transaction_result.scalar_one_or_none()
 
     if not transaction:
+        print("Stripe funding skipped: transaction not found", checkout_session_id)
         return
 
     if transaction.status == TransactionStatus.CONFIRMED:
+        print("Stripe funding skipped: transaction already confirmed", checkout_session_id)
         return
 
     if deal.status != DealStatus.CREATED:
+        print("Stripe funding skipped: deal is not CREATED", deal.status)
         return
 
     transaction.status = TransactionStatus.CONFIRMED
-    deal.transition_to(DealStatus.FUNDED)
+    deal.status = DealStatus.FUNDED
 
     db.add(Message(
         deal_id=deal.id,

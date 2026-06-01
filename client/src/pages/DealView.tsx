@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -31,7 +31,8 @@ import type { Deal } from '../types/deal'
 function DealView() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [searchParams, setSearchParams] = useSearchParams()
+    const location = useLocation()
+    const [searchParams] = useSearchParams()
     const { user } = useAppContext()
 
     const [deal, setDeal] = useState<Deal | null>(null)
@@ -60,14 +61,23 @@ function DealView() {
         const paymentStatus = searchParams.get('payment')
 
         if (paymentStatus === 'success') {
-            toast.success('Payment completed. Waiting for confirmation...')
-            fetchDeal()
-            setSearchParams({})
+            toast.success('Payment completed. Confirming escrow...')
+
+            const pollDeal = async () => {
+                for (let i = 0; i < 6; i++) {
+                    await fetchDeal()
+                    await new Promise(resolve => setTimeout(resolve, 1500))
+                }
+            }
+
+            pollDeal()
+
+            navigate(location.pathname, { replace: true })
         }
 
         if (paymentStatus === 'cancelled') {
             toast.info('Payment was cancelled')
-            setSearchParams({})
+            navigate(location.pathname, { replace: true })
         }
     }, [searchParams])
 
@@ -115,7 +125,7 @@ function DealView() {
         <div className="max-w-6xl mx-auto py-10">
             <button
                 type="button"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate('/dashboard')}
                 className="mb-6 flex items-center gap-2 text-zinc-400 hover:text-primary transition-colors cursor-pointer"
             >
                 <FontAwesomeIcon icon={faArrowLeft} />

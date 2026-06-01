@@ -5,6 +5,11 @@ export const getDeals = async () => {
     return data
 }
 
+export const getCompletedDeals = async () => {
+    const { data } = await authHost.get('/deals/completed')
+    return data
+}
+
 export const getDeal = async (dealId: string) => {
     const { data } = await authHost.get(`/deals/${dealId}`)
     return data
