@@ -22,6 +22,7 @@ import {
     approveDealWork,
     getDeal,
     startDealWork,
+    rejectDealWork
 } from '../api/dealAPI'
 
 import { createDealCheckoutSession } from '../api/paymentAPI'
@@ -150,6 +151,7 @@ function DealView() {
                     onStart={() => handleAction(() => startDealWork(deal.id), 'Work started successfully')}
                     onSubmit={() => setIsSubmitOpen(true)}
                     onApprove={() => handleAction(() => approveDealWork(deal.id), 'Work approved successfully')}
+                    onReject={() => handleAction(() => rejectDealWork(deal.id), 'Work has been rejected')}
                 />
             </div>
             <SubmitWorkModal

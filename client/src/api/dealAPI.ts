@@ -33,3 +33,8 @@ export const approveDealWork = async (dealId: string) => {
     const { data } = await authHost.patch(`/deals/${dealId}/approve`)
     return data
 }
+
+export const rejectDealWork = async (dealId: string) => {
+    const { data } = await authHost.patch(`/deals/${dealId}/reject`)
+    return data
+}

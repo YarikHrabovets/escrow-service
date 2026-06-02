@@ -74,3 +74,12 @@ async def approve_deal_work(deal_id: UUID, current_user: CurrentUser, db: DB) ->
         current_user=current_user,
         db=db
     )
+
+
+@router.patch("/{deal_id}/reject", response_model=DealRead)
+async def reject_deal_work(deal_id: UUID, current_user: CurrentUser, db: DB) -> DealRead:
+    return await deal_service.reject_deal_work(
+        deal_id=deal_id,
+        current_user=current_user,
+        db=db
+    )

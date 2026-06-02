@@ -177,3 +177,31 @@ async def approve_deal_work(deal_id: UUID, current_user: CurrentUser, db: DB) ->
     await db.commit()
 
     return await get_deal_detail(deal_id=deal_id, current_user=current_user, db=db)
+
+
+async def reject_deal_work(deal_id: UUID, current_user: CurrentUser, db: DB) -> DealRead:
+    result = await db.execute(select(Deal).where(Deal.id == deal_id))
+    deal = result.scalar_one_or_none()
+
+    if not deal:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Deal not found")
+
+    if deal.client_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only the client can reject work")
+
+    if deal.status != DealStatus.SUBMITTED:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Only submitted work can be rejected")
+
+    deal.status = DealStatus.IN_PROGRESS
+
+    db.add(Message(
+        deal_id=deal.id,
+        sender_id=None,
+        type=MessageType.SYSTEM,
+        body="Work was rejected by the client",
+        attachment_url=None
+    ))
+
+    await db.commit()
+
+    return await get_deal_detail(deal_id=deal_id, current_user=current_user, db=db)

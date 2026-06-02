@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileCircleCheck, faFileCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Button from '../ui/Button'
 import type { Deal } from '../../types/deal'
 
@@ -14,6 +16,7 @@ type Props = {
     onStart: () => void
     onSubmit: () => void
     onApprove: () => void
+    onReject: () => void
 }
 
 function DealActions({
@@ -24,6 +27,7 @@ function DealActions({
     onStart,
     onSubmit,
     onApprove,
+    onReject,
 }: Props) {
     const isClient = currentUser?.id === deal.client.id
     const isFreelancer = currentUser?.id === deal.freelancer.id
@@ -63,9 +67,16 @@ function DealActions({
                     Work is in progress.
                 </div>
             ) : deal.status === 'SUBMITTED' && isClient ? (
-                <Button disabled={loading} onClick={onApprove}>
-                    Approve Work
-                </Button>
+                <div className="flex gap-2">
+                    <Button disabled={loading} onClick={onApprove}>
+                        <FontAwesomeIcon icon={faFileCircleCheck} />
+                        Approve Work
+                    </Button>
+                    <Button disabled={loading} onClick={onReject}>
+                        <FontAwesomeIcon icon={faFileCircleXmark} />
+                        Reject Work
+                    </Button>
+                </div>
             ) : deal.status === 'SUBMITTED' && isFreelancer ? (
                 <div className="text-zinc-500">
                     Work submitted. Waiting for client approval.
